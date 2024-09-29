@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/firebaseConfig';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
@@ -13,7 +13,7 @@ const RegisterScreen = ({ navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const db = getFirestore(); // Khởi tạo Firestore
+  const db = getFirestore(); // Initialize Firestore
 
   const handleRegister = async () => {
     if (!email || !password || !username) {
@@ -25,15 +25,15 @@ const RegisterScreen = ({ navigation }) => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Lưu thông tin người dùng vào Firestore
+      // Save user information to Firestore
       await setDoc(doc(db, 'users', user.uid), {
         username,
         email,
-        isAdmin: false // Hoặc true nếu bạn muốn tạo tài khoản admin
+        isAdmin: false // Or true if you want to create an admin account
       });
 
       alert('Registration Successful');
-      navigation.replace('LoginScreen');
+      navigation.replace('LoginScreen'); // Ensure 'LoginScreen' is the correct route
     } catch (error) {
       showModal('Registration Failed: ' + friendlyErrorMessage(error.code));
     }
@@ -59,6 +59,10 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Image 
+        source={{ uri: 'https://ito.tdmu.edu.vn/img/ckeditor/images/Logothietke%201(7).jpg' }} 
+        style={styles.image} 
+      />
       <View style={styles.inputContainer}>
         <Icon name="person-outline" size={20} color="#666" style={styles.icon} />
         <TextInput
@@ -111,11 +115,17 @@ const RegisterScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', padding: 20 },
+  image: {
+    width: '100%',
+    height: 200,
+    marginBottom: 20,
+    resizeMode: 'cover',
+  },
   inputContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },
   icon: { marginRight: 10 },
   input: { flex: 1, borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 5 },
   registerButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#007BFF',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',

@@ -1,37 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 
 const EditServiceScreen = ({ route, navigation }) => {
-  const { serviceId, onUpdate } = route.params; // Lấy onUpdate từ params
-  const [service, setService] = useState(null);
+  const { serviceId, onUpdate } = route.params; // Retrieve onUpdate from params
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
-  const [loading, setLoading] = useState(true); // Thêm state loading
-  const [error, setError] = useState(''); // Thêm state để hiển thị lỗi
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const fetchService = async () => {
     const docRef = doc(db, 'services', serviceId);
     const serviceDoc = await getDoc(docRef);
     if (serviceDoc.exists()) {
       const serviceData = serviceDoc.data();
-      setService(serviceData);
       setName(serviceData.name);
-      setPrice(serviceData.price.replace(' ₫', ''));
+      setPrice(serviceData.price.replace(' ₫', '')); // Keep the value and remove the ' ₫' character
     } else {
       setError('Dịch vụ không tồn tại.');
     }
-    setLoading(false); // Đặt loading là false sau khi tải xong
+    setLoading(false);
   };
 
   const handleUpdateService = async () => {
     if (!name || !price) {
-      setError('Vui lòng nhập đầy đủ thông tin'); // Cập nhật thông báo lỗi
+      setError('Vui lòng nhập đầy đủ thông tin.');
       return;
     }
 
-    // Kiểm tra giá hợp lệ
     const priceNum = parseFloat(price);
     if (isNaN(priceNum) || priceNum <= 0) {
       setError('Giá dịch vụ phải là số dương.');
@@ -43,14 +40,13 @@ const EditServiceScreen = ({ route, navigation }) => {
       await updateDoc(docRef, { name, price: `${price} ₫` });
       alert('Dịch vụ đã được cập nhật!');
 
-      // Gọi hàm onUpdate để làm mới dữ liệu trên HomeScreen
       if (onUpdate) {
-        onUpdate();
+        onUpdate(); // Refresh data on HomeScreen
       }
 
-      navigation.goBack();
+      navigation.goBack(); // Go back to the previous screen
     } catch (error) {
-      setError('Lỗi khi cập nhật dịch vụ');
+      setError('Lỗi khi cập nhật dịch vụ.');
     }
   };
 
@@ -59,20 +55,22 @@ const EditServiceScreen = ({ route, navigation }) => {
   }, []);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />; // Hiển thị spinner khi đang tải
+    return <ActivityIndicator size="large" color="#007BFF" />; // Spinner color matches the theme
   }
 
   return (
     <View style={styles.container}>
-      {error ? <Text style={styles.error}>{error}</Text> : null} {/* Hiển thị lỗi nếu có */}
-      <Text style={styles.label}>Tên dịch vụ</Text>
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+      <Text style={styles.title}>Sửa Dịch Vụ</Text>
+      <Text style={styles.label}>Tên Dịch Vụ</Text>
       <TextInput
         style={styles.input}
         placeholder="Nhập tên dịch vụ"
         value={name}
         onChangeText={setName}
       />
-      <Text style={styles.label}>Giá dịch vụ</Text>
+
+      <Text style={styles.label}>Giá Dịch Vụ</Text>
       <TextInput
         style={styles.input}
         placeholder="Nhập giá dịch vụ"
@@ -80,16 +78,67 @@ const EditServiceScreen = ({ route, navigation }) => {
         onChangeText={setPrice}
         keyboardType="numeric"
       />
-      <Button title="Cập nhật dịch vụ" onPress={handleUpdateService} />
+
+      <TouchableOpacity style={styles.button} onPress={handleUpdateService}>
+        <Text style={styles.buttonText}>Cập Nhật Dịch Vụ</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  label: { fontSize: 16, marginBottom: 10 },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 20, borderRadius: 5 },
-  error: { color: 'red', marginBottom: 10 }, // Thêm style cho thông báo lỗi
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f4f6f8', // Light gray background for the entire screen
+    justifyContent: 'center', // Center content vertically
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#007BFF', // Title color matching the theme
+    textAlign: 'center', // Center the title
+    marginBottom: 20, // Space below the title
+  },
+  label: {
+    fontSize: 18,
+    marginBottom: 10,
+    fontWeight: 'bold',
+    color: '#333', // Dark color for labels
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#007BFF', // Border color matching the theme
+    padding: 15,
+    marginBottom: 20,
+    borderRadius: 5,
+    backgroundColor: '#fff', // White background for inputs
+    shadowColor: '#000', // Shadow effect for depth
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2, // Android shadow effect
+  },
+  error: {
+    color: 'red',
+    marginBottom: 10,
+    fontSize: 14,
+  },
+  button: {
+    backgroundColor: '#007BFF', // Blue color for the button
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    elevation: 3, // Elevation for Android shadow
+  },
+  buttonText: {
+    color: '#fff', // White text for button
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export default EditServiceScreen;

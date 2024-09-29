@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../firebase/firebaseConfig';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -43,6 +43,12 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* Image at the top of the screen */}
+      <Image
+        source={{ uri: 'https://ito.tdmu.edu.vn/img/ckeditor/images/Logothietke%201(7).jpg' }} // Replace with your image URL
+        style={styles.logo}
+        resizeMode="contain" // Ensures the image maintains its aspect ratio
+      />
       <View style={styles.inputContainer}>
         <Icon name="mail-outline" size={20} color="#666" style={styles.icon} />
         <TextInput
@@ -76,11 +82,18 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', padding: 20 },
+  logo: {
+    width: '80%', // Set to a percentage to adapt to screen width
+    height: undefined, // Let the height be determined by the aspect ratio
+    aspectRatio: 1, // Adjust this ratio to fit the image's original aspect ratio
+    alignSelf: 'center', // Center the image
+    marginBottom: 20, // Space below the image
+  },
   inputContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },
   icon: { marginRight: 10 },
   input: { flex: 1, borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 5 },
   resetButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#007BFF',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
@@ -95,7 +108,7 @@ const styles = StyleSheet.create({
   },
   modalText: { fontSize: 18, marginBottom: 15 },
   modalButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#007BFF',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

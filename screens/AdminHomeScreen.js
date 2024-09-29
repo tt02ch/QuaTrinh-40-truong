@@ -4,7 +4,7 @@ import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const HomeScreen = ({ navigation }) => {
+const AdminHomeScreen = ({ navigation }) => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -70,7 +70,7 @@ const HomeScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Image
-          source={{ uri: 'https://ito.tdmu.edu.vn/img/ckeditor/images/Logothietke%201(7).jpg' }} // Cập nhật URL hình ảnh ở đây
+          source={{ uri: 'https://ito.tdmu.edu.vn/img/ckeditor/images/Logothietke%201(7).jpg' }}
           style={styles.headerImage}
         />
         <Text style={styles.header}>Dịch vụ của chúng tôi</Text>
@@ -90,24 +90,22 @@ const HomeScreen = ({ navigation }) => {
               </View>
               <Text style={styles.serviceDescription}>{item.description}</Text>
             </View>
-            {/* Ẩn các nút chỉnh sửa và xóa */}
             <View style={styles.actionButtons}>
-              {/* <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item.id)}>
+              <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item.id)}>
                 <Icon name="edit" size={24} color="#007BFF" />
-              </TouchableOpacity> */}
-              {/* <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDeleteService(item)}>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDeleteService(item)}>
                 <Icon name="delete" size={24} color="#FF0000" />
-              </TouchableOpacity> */}
+              </TouchableOpacity>
             </View>
           </View>
         )}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
       />
-      {/* Ẩn nút thêm */}
-      {/* <TouchableOpacity style={styles.addButton} onPress={handleAddService}>
+      <TouchableOpacity style={styles.addButton} onPress={handleAddService}>
         <Icon name="add" size={30} color="#fff" />
-      </TouchableOpacity> */}
+      </TouchableOpacity>
 
       {/* Modal for confirming delete */}
       <Modal
@@ -263,4 +261,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default AdminHomeScreen;
